@@ -1,11 +1,16 @@
+import 'package:baby_shop/Controllers/google-sign-in-controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../Utils/app-constant.dart';
+import 'sign-in-screen.dart';
 
 class WelcomeScreem extends StatelessWidget {
-  const WelcomeScreem({super.key});
+  WelcomeScreem({super.key});
+
+  final GoogleSignInController _googleSignInController =
+      Get.put(GoogleSignInController());
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +73,9 @@ class WelcomeScreem extends StatelessWidget {
                     'Sign in with Google',
                     style: TextStyle(color: AppConstant.appTextColor),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    _googleSignInController.signInWithGoogle();
+                  },
                 ),
               ),
             ),
@@ -93,7 +100,9 @@ class WelcomeScreem extends StatelessWidget {
                     'Sign in with Email',
                     style: TextStyle(color: AppConstant.appTextColor),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.to(SignInScreen()); // Replace with your desired screen
+                  },
                 ),
               ),
             )

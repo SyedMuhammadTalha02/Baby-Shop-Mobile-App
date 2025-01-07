@@ -1,5 +1,7 @@
+import 'package:baby_shop/Screens/admin-panel/main-screen.dart';
 import 'package:baby_shop/Screens/auth-ui/sign-in-screen.dart';
 import 'package:baby_shop/Screens/auth-ui/splash-screen.dart';
+import 'package:baby_shop/Screens/auth-ui/welcome-screen.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -32,7 +34,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // ignore: prefer_const_constructors
-      home: SplashScreen(),
+      home: WelcomeScreem(),
     );
   }
 }

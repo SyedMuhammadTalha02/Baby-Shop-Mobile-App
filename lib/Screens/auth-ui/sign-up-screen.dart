@@ -1,8 +1,14 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_unnecessary_containers, file_names, unused_local_variable
+
+import 'package:baby_shop/Screens/auth-ui/sign-in-screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 
 import '../../Utils/app-constant.dart';
-import 'sign-in-screen.dart';
+import '../../controllers/sign-up-controller.dart';
+import '../../services/notification_service.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -12,166 +18,249 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final SignUpController signUpController = Get.put(SignUpController());
+  TextEditingController username = TextEditingController();
+  TextEditingController userEmail = TextEditingController();
+  TextEditingController userPhone = TextEditingController();
+  TextEditingController userCity = TextEditingController();
+  TextEditingController userPassword = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppConstant.appSecondryColor,
-        centerTitle: true,
-        title: Text(
-          "Sign Up",
-          style: TextStyle(
-            color: AppConstant.appTextColor,
-            fontWeight: FontWeight.bold,
+    return KeyboardVisibilityBuilder(builder: (context, isKeyboardVisible) {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: AppConstant.appSecondryColor,
+          centerTitle: true,
+          title: Text(
+            "Sign Up",
+            style: TextStyle(color: AppConstant.appTextColor),
           ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Welcome Text Section
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: 20.0),
-              child: Center(
-                child: Text(
-                  "Welcome to My App",
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                    color: AppConstant.appTextColor,
+        body: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Container(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: Get.height / 20,
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Welcome to my app",
+                    style: TextStyle(
+                        color: AppConstant.appTextColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0),
                   ),
                 ),
-              ),
-            ),
-            SizedBox(height: 20.0),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  _buildTextField(
-                    hintText: 'Full Name',
-                    prefixIcon: Icons.person,
+                SizedBox(
+                  height: Get.height / 20,
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                  width: Get.width,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: TextFormField(
+                      controller: userEmail,
+                      cursorColor: AppConstant.appTextColor,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        hintText: "Email",
+                        prefixIcon: Icon(Icons.email),
+                        contentPadding: EdgeInsets.only(top: 2.0, left: 8.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                    ),
                   ),
-                  _buildTextField(
-                    hintText: 'Email',
-                    prefixIcon: Icons.email,
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                  width: Get.width,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: TextFormField(
+                      controller: username,
+                      cursorColor: AppConstant.appSecondryColor,
+                      keyboardType: TextInputType.name,
+                      decoration: InputDecoration(
+                        hintText: "UserName",
+                        prefixIcon: Icon(Icons.person),
+                        contentPadding: EdgeInsets.only(top: 2.0, left: 8.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                    ),
                   ),
-                  _buildTextField(
-                    hintText: 'Phone Number',
-                    prefixIcon: Icons.phone,
-                    keyboardType: TextInputType.phone,
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                  width: Get.width,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: TextFormField(
+                      controller: userPhone,
+                      cursorColor: AppConstant.appSecondryColor,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        hintText: "Phone",
+                        prefixIcon: Icon(Icons.phone),
+                        contentPadding: EdgeInsets.only(top: 2.0, left: 8.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                    ),
                   ),
-                  _buildTextField(
-                    hintText: 'Address',
-                    prefixIcon: Icons.home,
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                  width: Get.width,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: TextFormField(
+                      controller: userCity,
+                      cursorColor: AppConstant.appSecondryColor,
+                      keyboardType: TextInputType.streetAddress,
+                      decoration: InputDecoration(
+                        hintText: "City",
+                        prefixIcon: Icon(Icons.location_pin),
+                        contentPadding: EdgeInsets.only(top: 2.0, left: 8.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                    ),
                   ),
-                  _buildTextField(
-                    hintText: 'Password',
-                    prefixIcon: Icons.lock,
-                    obscureText: true,
-                    suffixIcon: Icons.visibility_off,
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                  width: Get.width,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Obx(
+                      () => TextFormField(
+                        controller: userPassword,
+                        obscureText: signUpController.isPasswordVisible.value,
+                        cursorColor: AppConstant.appSecondryColor,
+                        keyboardType: TextInputType.visiblePassword,
+                        decoration: InputDecoration(
+                          hintText: "Password",
+                          prefixIcon: Icon(Icons.password),
+                          suffixIcon: GestureDetector(
+                            onTap: () {
+                              signUpController.isPasswordVisible.toggle();
+                            },
+                            child: signUpController.isPasswordVisible.value
+                                ? Icon(Icons.visibility_off)
+                                : Icon(Icons.visibility),
+                          ),
+                          contentPadding: EdgeInsets.only(top: 2.0, left: 8.0),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                  _buildTextField(
-                    hintText: 'Confirm Password',
-                    prefixIcon: Icons.lock,
-                    obscureText: true,
-                    suffixIcon: Icons.visibility_off,
-                  ),
-                  SizedBox(height: 20.0),
-                  _buildSignUpButton(),
-                  SizedBox(height: 10.0),
-                  _buildSignInText(), // Already have an account section
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+                ),
+                SizedBox(
+                  height: Get.height / 20,
+                ),
+                Material(
+                  child: Container(
+                    width: Get.width / 2,
+                    height: Get.height / 18,
+                    decoration: BoxDecoration(
+                      color: AppConstant.appSecondryColor,
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    child: TextButton(
+                      child: Text(
+                        "SIGN UP",
+                        style: TextStyle(color: AppConstant.appTextColor),
+                      ),
+                      onPressed: () async {
+                        NotificationService notificationService =
+                            NotificationService();
+                        String name = username.text.trim();
+                        String email = userEmail.text.trim();
+                        String phone = userPhone.text.trim();
+                        String city = userCity.text.trim();
+                        String password = userPassword.text.trim();
+                        String userDeviceToken = '';
 
-  Widget _buildTextField({
-    required String hintText,
-    required IconData prefixIcon,
-    bool obscureText = false,
-    IconData? suffixIcon,
-    TextInputType keyboardType = TextInputType.text,
-  }) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10.0),
-      child: TextFormField(
-        obscureText: obscureText,
-        cursorColor: AppConstant.appSecondryColor,
-        keyboardType: keyboardType,
-        decoration: InputDecoration(
-          hintText: hintText,
-          prefixIcon: Icon(prefixIcon, color: AppConstant.appTextColor),
-          suffixIcon: suffixIcon != null
-              ? Icon(suffixIcon, color: AppConstant.appTextColor)
-              : null,
-          contentPadding: const EdgeInsets.all(16.0),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12.0),
-            borderSide: BorderSide(color: AppConstant.appTextColor),
-          ),
-        ),
-      ),
-    );
-  }
+                        if (name.isEmpty ||
+                            email.isEmpty ||
+                            phone.isEmpty ||
+                            city.isEmpty ||
+                            password.isEmpty) {
+                          Get.snackbar(
+                            "Error",
+                            "Please enter all details",
+                            snackPosition: SnackPosition.BOTTOM,
+                            backgroundColor: AppConstant.appSecondryColor,
+                            colorText: AppConstant.appTextColor,
+                          );
+                        } else {
+                          UserCredential? userCredential =
+                              await signUpController.signUpMethod(
+                            name,
+                            email,
+                            phone,
+                            city,
+                            password,
+                            userDeviceToken,
+                          );
 
-  Widget _buildSignUpButton() {
-    return InkWell(
-      onTap: () {
-        // Add your sign-up logic here
-      },
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        width: Get.width / 1.5,
-        height: 50.0,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: AppConstant.appSecondryColor,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Text(
-          'Sign Up',
-          style: TextStyle(
-            color: AppConstant.appTextColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-        ),
-      ),
-    );
-  }
+                          if (userCredential != null) {
+                            Get.snackbar(
+                              "Verification email sent.",
+                              "Please check your email.",
+                              snackPosition: SnackPosition.BOTTOM,
+                              backgroundColor: AppConstant.appSecondryColor,
+                              colorText: AppConstant.appTextColor,
+                            );
 
-  Widget _buildSignInText() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          "Already have an account?",
-          style: TextStyle(color: AppConstant.appStatusBarColor),
-        ),
-        TextButton(
-          onPressed: () {
-            // Navigate to the sign-in page
-            Get.to(() => SignInScreen());
-          },
-          child: Text(
-            'Sign In',
-            style: TextStyle(
-              color: AppConstant.appStatusBarColor,
-              fontWeight: FontWeight.bold,
+                            FirebaseAuth.instance.signOut();
+                            Get.offAll(() => SignInScreen());
+                          }
+                        }
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: Get.height / 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Already have an account? ",
+                      style: TextStyle(color: AppConstant.appSecondryColor),
+                    ),
+                    GestureDetector(
+                      onTap: () => Get.offAll(() => SignInScreen()),
+                      child: Text(
+                        "Sign In",
+                        style: TextStyle(
+                            color: AppConstant.appSecondryColor,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                )
+              ],
             ),
           ),
         ),
-      ],
-    );
+      );
+    });
   }
 }

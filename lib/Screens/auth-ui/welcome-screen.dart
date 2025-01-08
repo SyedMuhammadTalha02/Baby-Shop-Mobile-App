@@ -101,7 +101,8 @@ class WelcomeScreem extends StatelessWidget {
                     style: TextStyle(color: AppConstant.appTextColor),
                   ),
                   onPressed: () {
-                    Get.to(SignInScreen()); // Replace with your desired screen
+                    Get.to(() =>
+                        SignInScreen()); // Replace with your desired screen
                   },
                 ),
               ),
